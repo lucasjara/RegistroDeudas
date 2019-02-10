@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RegistroDeudas.Apps;
+using System;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -10,8 +11,7 @@ namespace RegistroDeudas
         public App()
         {
             InitializeComponent();
-
-            MainPage = new MainPage();
+            MainPage = new Home();
         }
 
         protected override void OnStart()
