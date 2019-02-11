@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
+
 using System.Linq;
 using System.Text;
 
@@ -90,6 +92,7 @@ namespace RegistroDeudas.Apps
             ent_monto.Completed += (object sender, EventArgs e) => { ent_monto.Text = formatoPeso(ent_monto.Text.ToString()); };
             Content = contentView;
             // Eventos Botones
+            MetodosWebservice api = new MetodosWebservice();
             btn_compra.Clicked += async (sender, e) =>
             {
                 if (ent_descripcion.Text != "" && ent_monto.Text != "")
@@ -97,7 +100,11 @@ namespace RegistroDeudas.Apps
                     var answer = await DisplayAlert("Advertencia", "¿ Esto es una Compra ?", "Si por supuesto", "NO");
                     if (answer)
                     {
-                        await DisplayAlert("Advertencia", "SI ES UNA COMPRA", "OK");
+                        var respuesta = JArray.Parse(api.RegistroDeudas(ent_descripcion.Text, ent_monto.Text, "1", picker.SelectedIndex.ToString(), "1"));
+                        if (respuesta[0].ToString() != "S")
+                        {
+                            await DisplayAlert("Advertencia", respuesta[1].ToString(), "OK");
+                        }
                     }
                 }
                 else
@@ -112,14 +119,17 @@ namespace RegistroDeudas.Apps
                     var answer = await DisplayAlert("Advertencia", "¿ Esto es una Venta ?", "Si por supuesto", "NO");
                     if (answer)
                     {
-                        await DisplayAlert("Advertencia", "Esto es una Venta", "OK");
+                        var respuesta = JArray.Parse(api.RegistroDeudas(ent_descripcion.Text, ent_monto.Text, "1", picker.SelectedIndex.ToString(), "2"));
+                        if (respuesta[0].ToString() != "S")
+                        {
+                            await DisplayAlert("Advertencia", respuesta[1].ToString(), "OK");
+                        }
                     }
-                }
-                else
-                {
-                    await DisplayAlert("Advertencia", "Porfavor Completar todos los datos", "OK");
-                }
-
+                    else
+                    {
+                        await DisplayAlert("Advertencia", "Porfavor Completar todos los datos", "OK");
+                    }
+                };
             };
             btn_transferencia.Clicked += async (sender, e) =>
             {
@@ -128,7 +138,11 @@ namespace RegistroDeudas.Apps
                     var answer = await DisplayAlert("Advertencia", "¿ Esto es una Transferencia ?", "Si por supuesto", "NO");
                     if (answer)
                     {
-                        await DisplayAlert("Advertencia", "Esto es una Transferencia", "OK");
+                        var respuesta = JArray.Parse(api.RegistroDeudas(ent_descripcion.Text, ent_monto.Text, "1", picker.SelectedIndex.ToString(), "3"));
+                        if (respuesta[0].ToString() != "S")
+                        {
+                            await DisplayAlert("Advertencia", respuesta[1].ToString(), "OK");
+                        }
                     }
                 }
                 else
@@ -147,7 +161,6 @@ namespace RegistroDeudas.Apps
             int numero = Int32.Parse(valor);
             return numero.ToString("C");
         }
-
 
         class FormatoTemplate : Grid
         {
